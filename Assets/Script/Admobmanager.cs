@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using GoogleMobileAds;
 using GoogleMobileAds.Api;
+using GoogleMobileAds.Common;
 
 public class Admobmanager : MonoBehaviour
 {
 #if UNITY_ANDROID
-    public string BannerID= "ca-app-pub-3940256099942544/6300978111";
+    public string BannerID = "ca-app-pub-3940256099942544/6300978111";
     public string IntrestitialID = "ca-app-pub-3940256099942544/1033173712";
     public string RewardID = "ca-app-pub-3940256099942544/5224354917";
     public string IntrestitalRewardID = "ca-app-pub-3940256099942544/5354046379";
@@ -18,11 +19,23 @@ public class Admobmanager : MonoBehaviour
     public string IntrestitalRewardID="ca-app-pub-3940256099942544/6978759866";
 #endif
 
-
+    public static Admobmanager instance;
     BannerView _bannerView;
     private InterstitialAd _interstitialAd;
     private RewardedAd _rewardedAd;
     private RewardedInterstitialAd _rewardedInterstitialAd;
+    private AppOpenAd appOpenAd;
+
+    private void Awake()
+    {
+        if (instance == null)
+        {
+            instance = this;
+        }
+
+       
+    }
+
     private void Start()
     {
         MobileAds.RaiseAdEventsOnUnityMainThread = true;
@@ -34,6 +47,7 @@ public class Admobmanager : MonoBehaviour
         LoadInterstitialAd();
         LoadRewardedAd();
         LoadRewardedInterstitialAd();
+        
     }
 
     public void LoadAd()
@@ -62,7 +76,7 @@ public class Admobmanager : MonoBehaviour
         }
 
         // Create a 320x50 banner at top of the screen
-        _bannerView = new BannerView(BannerID, AdSize.Banner, AdPosition.Top);
+        _bannerView = new BannerView(BannerID, AdSize.Banner, AdPosition.Bottom);
         BannerViewCallbacks();
     }
 
@@ -119,7 +133,7 @@ public class Admobmanager : MonoBehaviour
             _bannerView = null;
         }
     }
-    
+
     public void ShowBanner()
     {
         LoadAd();
@@ -148,8 +162,8 @@ public class Admobmanager : MonoBehaviour
         InterstitialAd.Load(IntrestitialID, adRequest,
             (InterstitialAd ad, LoadAdError error) =>
             {
-              // if error is not null, the load request failed.
-              if (error != null || ad == null)
+                // if error is not null, the load request failed.
+                if (error != null || ad == null)
                 {
                     Debug.LogError("interstitial ad failed to load an ad " +
                                    "with error : " + error);
@@ -236,8 +250,8 @@ public class Admobmanager : MonoBehaviour
         RewardedAd.Load(RewardID, adRequest,
             (RewardedAd ad, LoadAdError error) =>
             {
-              // if error is not null, the load request failed.
-              if (error != null || ad == null)
+                // if error is not null, the load request failed.
+                if (error != null || ad == null)
                 {
                     Debug.LogError("Rewarded ad failed to load an ad " +
                                    "with error : " + error);
@@ -327,8 +341,8 @@ public class Admobmanager : MonoBehaviour
         RewardedInterstitialAd.Load(IntrestitalRewardID, adRequest,
             (RewardedInterstitialAd ad, LoadAdError error) =>
             {
-              // if error is not null, the load request failed.
-              if (error != null || ad == null)
+                // if error is not null, the load request failed.
+                if (error != null || ad == null)
                 {
                     Debug.LogError("rewarded interstitial ad failed to load an ad " +
                                    "with error : " + error);
@@ -394,4 +408,8 @@ public class Admobmanager : MonoBehaviour
             LoadRewardedInterstitialAd();
         };
     }
-}
+
+    /*--------------------------------APPOPEN ADS----------------------*/
+
+    
+    }
