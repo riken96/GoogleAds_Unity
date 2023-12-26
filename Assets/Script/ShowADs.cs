@@ -27,7 +27,10 @@ public class ShowADs : MonoBehaviour
 
     public void ShowRewardIntrestital()
     {
-        Admobmanager.instance.ShowRewardedInterstitialAd();
+        Admobmanager.instance.ShowRewardVideo((o) =>{
+
+            Debug.Log("IsRewarder Done");
+        });
     }
 
 }

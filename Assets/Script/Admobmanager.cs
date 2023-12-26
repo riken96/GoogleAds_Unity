@@ -4,6 +4,7 @@ using UnityEngine;
 using GoogleMobileAds;
 using GoogleMobileAds.Api;
 using GoogleMobileAds.Common;
+using System;
 
 public class Admobmanager : MonoBehaviour
 {
@@ -33,7 +34,7 @@ public class Admobmanager : MonoBehaviour
             instance = this;
         }
 
-       
+
     }
 
     private void Start()
@@ -47,7 +48,7 @@ public class Admobmanager : MonoBehaviour
         LoadInterstitialAd();
         LoadRewardedAd();
         LoadRewardedInterstitialAd();
-        
+
     }
 
     public void LoadAd()
@@ -322,6 +323,8 @@ public class Admobmanager : MonoBehaviour
     }
 
     /*------------------------------------------Rewarsintrestital Ads----------------------------------------------*/
+
+    public Action<bool> _callback;
     public void LoadRewardedInterstitialAd()
     {
         // Clean up the old ad before loading a new one.
@@ -355,6 +358,30 @@ public class Admobmanager : MonoBehaviour
                 _rewardedInterstitialAd = ad;
             });
     }
+
+    public void ShowRewardVideo(Action<bool> onComplete)
+    {
+
+        _callback = onComplete;
+
+        if (_callback == null)
+        {
+            return;
+        }
+        _callback.Invoke(true);
+        _callback = null;
+
+        if (_rewardedInterstitialAd != null && _rewardedInterstitialAd.CanShowAd())
+        {
+            ShowRewardedInterstitialAd();
+        }
+        else
+        {
+            LoadRewardedInterstitialAd();
+        }
+
+    }
+
     public void ShowRewardedInterstitialAd()
     {
         const string rewardMsg =
@@ -397,7 +424,13 @@ public class Admobmanager : MonoBehaviour
         // Raised when the ad closed full screen content.
         ad.OnAdFullScreenContentClosed += () =>
         {
-            Debug.Log("Rewarded interstitial ad full screen content closed.");
+
+            if (_callback == null)
+            {
+                return;
+            }
+            _callback.Invoke(true);
+            _callback = null;
             LoadRewardedInterstitialAd();
         };
         // Raised when the ad failed to open full screen content.
@@ -405,11 +438,13 @@ public class Admobmanager : MonoBehaviour
         {
             Debug.LogError("Rewarded interstitial ad failed to open " +
                            "full screen content with error : " + error);
+            if (_callback == null)
+            {
+                return;
+            }
+            _callback.Invoke(false);
             LoadRewardedInterstitialAd();
         };
     }
 
-    /*--------------------------------APPOPEN ADS----------------------*/
-
-    
-    }
+}

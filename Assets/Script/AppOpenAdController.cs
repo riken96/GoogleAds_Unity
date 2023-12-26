@@ -195,7 +195,6 @@ namespace GoogleMobileAds.Sample
             {
                 Debug.Log("App open ad full screen content closed.");
 
-                // It may be useful to load a new ad when the current one is complete.
                 LoadAd();
             };
             // Raised when the ad failed to open full screen content.
